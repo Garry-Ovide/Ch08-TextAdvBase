@@ -1,26 +1,31 @@
 import java.util.Set;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 /**
- * Class Room - a room in an adventure game.
+ * Represents a room in the Super Text Adventure game.
  *
- * This class is part of the "World of Zuul" application. 
- * "World of Zuul" is a very simple, text based adventure game.  
+ * Each room has a description, exits to neighboring
+ * rooms, and a collection of items.
  *
- * A "Room" represents one location in the scenery of the game.  It is 
- * connected to other rooms via exits.  For each existing exit, the room 
- * stores a reference to the neighboring room.
- * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * Each item has a description and a weight.
+ * Players can take items from rooms and drop
+ * carried items into rooms.
+ *
+ * Originally written by Michael Kölling
+ * and David J. Barnes.
+ * Updated by Garry Ovide.
+ *
+ * @author Garry Ovide
+ * @version 2026.11.06
  */
-
 public class Room 
 {
     private String description;
     private HashMap<String, Room> exits;        // stores exits of this room.
-
+    private ArrayList<Item> items;
+    
     /**
      * Create a room described "description". Initially, it has
      * no exits. "description" is something like "a kitchen" or
@@ -31,8 +36,45 @@ public class Room
     {
         this.description = description;
         exits = new HashMap<>();
+        items = new ArrayList<>();
+    }
+    
+    /**
+     * Place an item in this room.
+     *
+     * @param item The item to add to the room.
+     */
+    public void addItem(Item item)
+    {
+          items.add(item);
+    }
+    
+    
+    /**
+     * Remove an item from this room by matching its
+     * description with the player's search word.
+     *
+     * @param description The item name entered by the player.
+     * @return The removed item, or null if no item matches.
+     */
+    public Item removeItem(String description)
+    {
+        Iterator<Item> iterator = items.iterator();
+        
+        while (iterator.hasNext()) {
+            Item item = iterator.next();
+            
+            if (item.getDescription().toLowerCase()
+            .contains(description.toLowerCase())) {
+                iterator.remove();
+                return item;
+            }
+        }
+
+        return null;
     }
 
+    
     /**
      * Define an exit from this room.
      * @param direction The direction of the exit.
@@ -52,16 +94,29 @@ public class Room
         return description;
     }
 
+    
     /**
-     * Return a description of the room in the form:
-     *     You are in the kitchen.
-     *     Exits: north west
-     * @return A long description of this room
+     * Return the room description, exits, and all items
+     * contained in the room.
+     *
+     * @return The full description of the room,
+     *         including exits and items.
      */
     public String getLongDescription()
     {
-        return "You are " + description + ".\n" + getExitString();
+        String roomInfo = "You are " + description + ".\n";
+    roomInfo += getExitString();
+    
+    if (!items.isEmpty()) {
+        roomInfo += "\nItems in this room:";
+
+        for (Item item : items) {
+            roomInfo += "\n- " + item.getItemInfo();
+        }
     }
+        return roomInfo;
+    }
+
 
     /**
      * Return a string describing the room's exits, for example

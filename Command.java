@@ -1,22 +1,24 @@
 /**
- * This class is part of the "World of Zuul" application. 
- * "World of Zuul" is a very simple, text based adventure game.  
+ * Represents a command entered by the player
+ * in the Super Text Adventure game.
  *
- * This class holds information about a command that was issued by the user.
- * A command currently consists of two parts: a CommandWord and a string
- * (for example, if the command was "take map", then the two parts
- * are TAKE and "map").
- * 
- * The way this is used is: Commands are already checked for being valid
- * command words. If the user entered an invalid command (a word that is not
- * known) then the CommandWord is UNKNOWN.
+ * Each command contains a CommandWord and an
+ * optional second word.
  *
- * If the command had only one word, then the second word is <null>.
- * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2016.02.29
+ * For example, "take map" contains the command
+ * TAKE and the second word "map".
+ *
+ * Unknown commands are represented by UNKNOWN.
+ * Commands without a second word store null.
+ *
+ * Originally written by Michael Kölling
+ * and David J. Barnes.
+ * Updated by Garry Ovide.
+ *
+ * @author Michael Kölling and David J. Barnes
+ * @author Garry Ovide
+ * @version 2026.11.06
  */
-
 public class Command
 {
     private CommandWord commandWord;
