@@ -19,10 +19,12 @@ public class Player
     private String name;
     private Room currentRoom;
     private ArrayList<Item> carriedItems;
+    private int maximumWeight;
 
     /**
      * Create a player with a name and starting room.
      * The player's inventory is initially empty.
+     * The maximum carrying weight is 10 units.
      *
      * @param name The player's name.
      * @param startingRoom The player's starting room.
@@ -32,6 +34,7 @@ public class Player
         this.name = name;
         currentRoom = startingRoom;
         carriedItems = new ArrayList<>();
+        maximumWeight = 10;
     }
 
     /**
@@ -65,12 +68,12 @@ public class Player
     }
     
     /**
-     * Add an item to the player's inventory.
-     * The player can carry any number of items.
+     * Add an item to the player's inventory if
+     * the maximum carrying weight is not exceeded.
      *
      * @param item The item the player wants to carry.
      * @return true if the item was added successfully,
-     *         false if the item is null.
+     * false if the item is null or too heavy.
      */
     public boolean takeItem(Item item)
     {
@@ -78,6 +81,13 @@ public class Player
             return false;
         }
         
+        if (getCurrentWeight() + item.getWeight() > maximumWeight) {
+            System.out.println("You cannot carry this item.");
+            System.out.println("Maximum weight: " + maximumWeight);
+            System.out.println("Current weight: " + getCurrentWeight());
+            return false;
+        }
+
         carriedItems.add(item);
         return true;
     }
@@ -113,5 +123,32 @@ public class Player
     {
         return new ArrayList<>(carriedItems);
     }
+    
+    
+    /**
+     * Calculate the total weight of all items
+     * currently carried by the player.
+     *
+     * @return The total weight of carried items.
+     */
+    public int getCurrentWeight()
+    {
+        int totalWeight = 0;
+        
+        for (Item item : carriedItems) {
+            totalWeight += item.getWeight();
+        }
 
+        return totalWeight;
+    }
+
+    /**
+     * Increase the maximum weight the player can carry.
+     *
+     * @param extraWeight The additional carrying capacity.
+     */
+    public void increaseMaximumWeight(int extraWeight)
+    {
+        maximumWeight += extraWeight;
+    }
 }

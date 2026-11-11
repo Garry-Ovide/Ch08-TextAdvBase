@@ -56,6 +56,8 @@ public class Game
         
         cafeteria.addItem(new Item("a lunch tray", 2));
         cafeteria.addItem(new Item("a sandwich", 1));
+        cafeteria.addItem(new Item("an energy drink", 1));
+
         
         theater.setExit("west", outside);
 
@@ -196,6 +198,15 @@ public class Game
             case DROP:
                 dropItem(command);
                 break;
+                
+                
+            case ITEMS:
+                printItems();
+                break;
+
+            case DRINK:
+                drinkEnergy(command);
+                break;
 
             case QUIT:
                 wantToQuit = quit(command);
@@ -298,7 +309,8 @@ public class Game
    
     /**
      * Allow the player to take an item from the current room.
-     * The player can carry any number of items.
+     * The item is collected only if the player has enough
+     * remaining carrying capacity.
      *
      * @param command The command containing the item name.
      */
@@ -308,22 +320,26 @@ public class Game
             System.out.println("Take what?");
             return;
         }
-
+        
         String itemName = command.getSecondWord();
 
-        // Remove the requested item from the current room.
+        // Remove the requested item from the room.
         Item item = player.getCurrentRoom().removeItem(itemName);
 
         if (item == null) {
             System.out.println("That item is not in this room.");
         }
         else {
-            // Add the item to the player's inventory.
-            player.takeItem(item);
-            
-            System.out.println("You picked up "
-                           + item.getDescription());
-          }
+            // Check whether the player can carry the item.
+            if (player.takeItem(item)) {
+                System.out.println("You picked up "
+                + item.getDescription());
+            }
+            else {
+                // Return the item to the room if it is too heavy.
+                player.getCurrentRoom().addItem(item);
+            }
+        }
     }
 
     /**
@@ -355,8 +371,56 @@ public class Game
                            + item.getDescription());
         }
     }
-
     
+    /**
+     * Display all items carried by the player
+     * and their total weight.
+     */
+    private void printItems()
+    {
+        System.out.println("Items you are carrying:");
+        
+        if (player.getCarriedItems().isEmpty()) {
+            System.out.println("You are not carrying any items.");
+        }
+        else {
+            for (Item item : player.getCarriedItems()) {
+                System.out.println(item.getItemInfo());
+            }
+        }
+        System.out.println("Total weight: " + player.getCurrentWeight());
+    }
+    
+    /**
+     * Allow the player to drink an energy drink.
+     * Drinking it increases the maximum carrying weight.
+     *
+     * @param command The command containing the drink name.
+     */
+    private void drinkEnergy(Command command)
+    {
+        if (!command.hasSecondWord()) {
+            System.out.println("Drink what?");
+            return;
+        }
+
+        if (!command.getSecondWord().equalsIgnoreCase("energy")) {
+            System.out.println("You cannot drink that.");
+            return;
+        }
+
+        Item drink = player.dropItem("energy drink");
+
+        if (drink == null) {
+            System.out.println("You are not carrying an energy drink.");
+        }
+        else {
+            player.increaseMaximumWeight(5);
+            System.out.println("You drank the energy drink!");
+            System.out.println("Maximum carrying weight increased to 15.");
+        }
+    }
+  
     /**
      * Determine whether the player wants to quit the game.
      * The quit command must not contain a second word.

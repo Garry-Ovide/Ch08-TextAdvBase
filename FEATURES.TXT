@@ -26,7 +26,22 @@ COMPLETED FEATURES
 13. Javadoc documentation generated
     in the doc directory.
 
-EXTRA CREDIT
 
-Exercises 8.31, 8.32, and 8.33:
-Not implemented.
+EXTRA CREDIT FEATURES
+
+Exercise 8.31 - Maximum Carrying Weight
+- The player has a maximum carrying weight of 10.
+- Items cannot be picked up if they exceed the weight limit.
+- Rejected items remain in their original rooms.
+
+Exercise 8.32 - ITEMS Command
+- Added the “items” command.
+- Displays all items carried by the player.
+- Displays the total weight of carried items.
+
+Exercise 8.33 - Energy Drink
+- Added an energy drink to the second-floor cafeteria.
+- The player can pick up the energy drink.
+- The “drink energy” command consumes the drink.
+- Drinking it increases maximum carrying weight from 10 to 15.
+- The energy drink is removed from inventory after use.
